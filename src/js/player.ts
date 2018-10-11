@@ -9,6 +9,7 @@ export class Player implements GameObject
     private PlayerNumber: number;
     highScoreElement = (document.getElementById("highScore") as HTMLDivElement);
     highScore = 0;
+    public static playMode = document.getElementById("playMode") as HTMLSelectElement;
     public speed:number = 160;
     public height:number = 30;
     public width:number = 10;
@@ -36,26 +37,33 @@ export class Player implements GameObject
         }
         else
         {
-            if (this.position.y < this.gameEngine.ball.position.y && this.position.y < this.gameEngine.canvasHeight-32)
+            if (Player.playMode.value == "vsAi")
             {
-                //move down
-                this.position.y += time/1000 * this.speed
+                if (this.position.y < this.gameEngine.ball.position.y && this.position.y < this.gameEngine.canvasHeight-32)
+                {
+                    //move down
+                    this.position.y += time/1000 * this.speed
+                }
+                if (this.position.y > this.gameEngine.ball.position.y && this.position.y > 4)
+                {
+                    //move up
+                    this.position.y -= time/1000 * this.speed
+                }
             }
-            if (this.position.y > this.gameEngine.ball.position.y && this.position.y > 4)
+            else if (Player.playMode.value == "vsPlayer")
             {
-                //move up
-                this.position.y -= time/1000 * this.speed
+                if (this.gameEngine.lKey && this.position.y < this.gameEngine.canvasHeight-32)
+                {
+                    //move down
+                    this.position.y += time/1000 * this.speed 
+                }
+                if (this.gameEngine.oKey && this.position.y > 4)
+                {
+                    //move up
+                    this.position.y -= time/1000 * this.speed
+                }
             }
-            /*if (this.gameEngine.lKey && this.position.y < this.gameEngine.canvasHeight-32)
-            {
-                //move down
-                this.position.y += time/1000 * this.speed 
-            }
-            if (this.gameEngine.oKey && this.position.y > 4)
-            {
-                //move up
-                this.position.y -= time/1000 * this.speed
-            }*/
+            
             //this.position.y = this.gameEngine.ball.position.y-12; //Ai opponent with no-collision??
         }
        

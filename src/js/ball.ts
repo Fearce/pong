@@ -25,7 +25,7 @@ export class Ball implements GameObject
     update(time: number): void {
         //testing for collisions with walls -> change direction
         if (this.position.x <=4 ||this.position.x >= this.gameEngine.canvasWidth-this.size-4) this.direction.x *= -1;
-        if (this.position.y <=8 ||this.position.y >= this.gameEngine.canvasHeight-this.size-8) this.direction.y *= -1;
+        if (this.position.y <=5 ||this.position.y >= this.gameEngine.canvasHeight-this.size-5) this.direction.y *= -1;
 
         //testing for Collision with any gameobject
         this.gameEngine.objects.forEach(elegameobj => {

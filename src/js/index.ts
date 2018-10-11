@@ -11,6 +11,7 @@ import { Ball } from "./ball";
 export class GameEngine
 {
     public static points:number;
+    public static tries:number;
     // items in the game
     public ball:Ball;
     public player1:Player;
@@ -46,6 +47,7 @@ export class GameEngine
         this.canvasHeight = this.canvas.height;
 
         GameEngine.points = 0;
+        GameEngine.tries = 0;
 
         // listen for keyboard input
         document.addEventListener('keyup', this.keyUp.bind(this));
@@ -140,10 +142,12 @@ export class GameEngine
             //Check for loss and reset Score&Speed
             if (this.ball.position.x < this.player1.position.x)
             {
+                GameEngine.tries++;
                 GameEngine.points = 0;
                 this.ball.position.x = this.canvasWidth/2;
                 this.ball.speed = 160;
                 this.player2.speed = 160;
+                document.getElementById("amountTries").textContent = "Deaths : " + GameEngine.tries.toString();
             }
             
             //every element is updated
