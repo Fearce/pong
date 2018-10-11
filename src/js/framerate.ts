@@ -1,11 +1,13 @@
 import {Vector} from './vector';
 import { GameObject } from './gameObject';
+import { GameEngine } from "./index";
 
 /*
     this class makes a fps counter to show how often the game refreshes
 */
 export class Framerate implements GameObject
 {
+    points: number;
     height: number;
     width: number;
     onColliosion(other: GameObject): void {
@@ -25,7 +27,7 @@ export class Framerate implements GameObject
 
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(""+Math.round(1000/this.time) + "fps", this.position.x, this.position.y);
+        ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points, this.position.x, this.position.y);
 
     }
 

@@ -8,8 +8,8 @@ export class Ball implements GameObject
     public width: number;
     private gameEngine:GameEngine;
     public position:Vector;
-    private direction:Vector;
-    private speed:number = 60;
+    public direction:Vector;
+    public speed:number = 160;
     private size:number= 10;
 
     constructor (position:Vector, gameEngine:GameEngine)
@@ -24,8 +24,8 @@ export class Ball implements GameObject
     // Update method takes care of all logic
     update(time: number): void {
         //testing for collisions with walls -> change direction
-        if (this.position.x <=0 ||this.position.x >= this.gameEngine.canvasWidth-this.size) this.direction.x *= -1;
-        if (this.position.y <=0 ||this.position.y >= this.gameEngine.canvasHeight-this.size) this.direction.y *= -1;
+        if (this.position.x <=4 ||this.position.x >= this.gameEngine.canvasWidth-this.size-4) this.direction.x *= -1;
+        if (this.position.y <=8 ||this.position.y >= this.gameEngine.canvasHeight-this.size-8) this.direction.y *= -1;
 
         //testing for Collision with any gameobject
         this.gameEngine.objects.forEach(elegameobj => {
@@ -39,15 +39,26 @@ export class Ball implements GameObject
     
     // draw ball on canvas
     draw(ctx: CanvasRenderingContext2D): void {
-        ctx.fillRect(this.position.x, this.position.y, this.size, this.size);
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, this.size/2.5, 0, (Math.PI / 180) * 360);
+          ctx.fillStyle = "white";
+          ctx.closePath();
+          ctx.fill();
+        //ctx.fillRect(this.position.x, this.position.y, this.size, this.size); //Square ball, old
     }
     
     // in case of any collision this method is called
     onColliosion(other: GameObject): void {
         // reverse direction if player collides with ball
-        if (other == this.gameEngine.player1)
+        if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
             this.direction.x *= -1;
+        }
+        //Increases speed of ball and AI opponent for every score point
+        if (other == this.gameEngine.player1)
+        {
+            this.speed *= 1.05;
+            this.gameEngine.player2.speed *= 1.05;
         }
     }
 

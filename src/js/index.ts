@@ -10,10 +10,11 @@ import { Ball } from "./ball";
 
 export class GameEngine
 {
-
+    public static points:number;
     // items in the game
     public ball:Ball;
     public player1:Player;
+    public player2:Player;
  
     // canvas info
     public canvasWidth:number;
@@ -22,6 +23,8 @@ export class GameEngine
     // keep track of key states
     public aKey:boolean;
     public qKey:boolean;
+    public oKey:boolean;
+    public lKey:boolean;
 
     private canvas:HTMLCanvasElement;
     private ctx:CanvasRenderingContext2D;
@@ -42,6 +45,8 @@ export class GameEngine
         this.canvasWidth = this.canvas.width;
         this.canvasHeight = this.canvas.height;
 
+        GameEngine.points = 0;
+
         // listen for keyboard input
         document.addEventListener('keyup', this.keyUp.bind(this));
         document.addEventListener('keydown', this.keyDown.bind(this));
@@ -49,8 +54,10 @@ export class GameEngine
         //ceate gameobjects
         this.objects.push(new Framerate(new Vector(10,10)));
         
-        this.player1 = new Player(new Vector(20,10), this);
+        this.player1 = new Player(new Vector(20,10), this,1);
+        this.player2 = new Player(new Vector(this.canvasWidth-40,10), this,2);
         this.objects.push(this.player1);
+        this.objects.push(this.player2);
 
         this.ball = new Ball(new Vector(this.canvasWidth/2, this.canvasHeight/2), this);
         this.objects.push(this.ball);
@@ -68,6 +75,12 @@ export class GameEngine
                 break;
             case "q":
                 this.qKey = true;
+                break;
+            case "o":
+                this.oKey = true;
+                break;
+            case "l":
+                this.lKey = true;
         }
     }
 
@@ -76,11 +89,16 @@ export class GameEngine
     {
         switch (event.key) {
             case "a":
-                this.aKey=false;
+                this.aKey = false;
                 break;
             case "q":
-                this.qKey=false;
+                this.qKey = false;
                 break;
+            case "o":
+                this.oKey = false;
+                break;
+            case "l":
+                this.lKey = false;
         }   
     } 
     
@@ -88,8 +106,8 @@ export class GameEngine
     private Collide(a:GameObject, b:GameObject): boolean {
         if (a.position.x < (b.position.x+b.width) &&
             (a.position.x+a.width) > b.position.x &&
-            a.position.y < (b.position.y+a.height) &&
-            a.position.y+b.height > b.position.y)
+            a.position.y < (b.position.y+b.height) &&
+            a.position.y+a.height > b.position.y)
             {
                 return true;
             }
@@ -101,7 +119,6 @@ export class GameEngine
     {
         // clear the screen in every update
         this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-
         this.date = new Date();
         this.timeNow = this.date.getTime()
         var time = this.timeNow-this.timeZero;
@@ -109,7 +126,7 @@ export class GameEngine
 
         // run throght all objects
         this.objects.forEach(element => {
-            //all objects are testeted for collisions on all objects
+            //all objects are tested for collisions on all objects
             this.objects.forEach(other => {  
                 if (element !== other)
                 {
@@ -119,10 +136,19 @@ export class GameEngine
                     }
                 }
             });
+
+            //Check for loss and reset Score&Speed
+            if (this.ball.position.x < this.player1.position.x)
+            {
+                GameEngine.points = 0;
+                this.ball.position.x = this.canvasWidth/2;
+                this.ball.speed = 160;
+                this.player2.speed = 160;
+            }
             
             //every element is updated
             element.update(time);
-
+            
             // every element is drawn on canvas
             element.draw(this.ctx);
         });
