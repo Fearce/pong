@@ -11,6 +11,9 @@ export class Ball implements GameObject
     public direction:Vector;
     public speed:number = 160;
     private size:number= 10;
+    public radius:number = this.size/2.5;
+    public highScoreElement = (document.getElementById("highScore") as HTMLDivElement);
+    public highScore = 0;
 
     constructor (position:Vector, gameEngine:GameEngine)
     {
@@ -40,7 +43,7 @@ export class Ball implements GameObject
     // draw ball on canvas
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.size/2.5, 0, (Math.PI / 180) * 360);
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, (Math.PI / 180) * 360);
           ctx.fillStyle = "white";
           ctx.closePath();
           ctx.fill();
@@ -52,6 +55,15 @@ export class Ball implements GameObject
         // reverse direction if player collides with ball
         if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
+            if (other == this.gameEngine.player1)
+            {
+                GameEngine.points++;
+                if (+this.highScore < GameEngine.points)
+                {
+                    this.highScore = GameEngine.points;
+                    document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
+                }
+            }
             this.direction.x *= -1;
         }
         //Increases speed of ball and AI opponent for every score point

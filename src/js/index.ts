@@ -6,6 +6,15 @@ import { Ball } from "./ball";
 
 /*
     THis is the main PONG GAME script
+    Todo: 
+        Fix CircleToRectangle collission (ball med players)
+        Add intro screen instead of dropdown
+        Player 2 score on playMode.value = "vsPlayer"
+        PowerUps:
+            Multiple balls
+            Speed reset
+            Opposing player slow down
+            More points
 */
 
 export class GameEngine
@@ -104,7 +113,23 @@ export class GameEngine
         }   
     } 
     
+
+    private RectCircleColliding(circle:Ball,rect:GameObject): boolean{
+        var distX = Math.abs(circle.position.x - rect.position.x-rect.width/2);
+        var distY = Math.abs(circle.position.y - rect.position.y-rect.height/2);
+    
+        if (distX > (rect.width/2 + circle.radius)) { return false; }
+        if (distY > (rect.height/2 + circle.radius)) { return false; }
+    
+        if (distX <= (rect.width/2)) { return true; } 
+        if (distY <= (rect.height/2)) { return true; }
+    
+        var dx=distX-rect.width/2;
+        var dy=distY-rect.height/2;
+        return (dx*dx+dy*dy<=(circle.radius*circle.radius));
+    }
     // a very good explanation of how rectangular collision works: https://silentmatt.com/rectangle-intersection/
+
     private Collide(a:GameObject, b:GameObject): boolean {
         if (a.position.x < (b.position.x+b.width) &&
             (a.position.x+a.width) > b.position.x &&
@@ -130,9 +155,16 @@ export class GameEngine
         this.objects.forEach(element => {
             //all objects are tested for collisions on all objects
             this.objects.forEach(other => {  
-                if (element !== other)
+                if (element !== other && element != this.ball) //R2R collision
                 {
                     if (this.Collide(element, other))
+                    {
+                        element.onColliosion(other);
+                    }
+                }
+                if (element !== other && element == this.ball) //R2C collision
+                {
+                    if (this.RectCircleColliding(this.ball, other))
                     {
                         element.onColliosion(other);
                     }
