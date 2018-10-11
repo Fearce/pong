@@ -172,7 +172,7 @@ export class GameEngine
             });
 
             //Check for loss and reset Score&Speed
-            if (this.ball.position.x < this.player1.position.x)
+            if (this.ball.position.x < this.player1.position.x+12)
             {
                 GameEngine.tries++;
                 GameEngine.points = 0;

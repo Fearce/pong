@@ -7,8 +7,6 @@ export class Player implements GameObject
     public position:Vector 
     private gameEngine:GameEngine;
     public PlayerNumber: number;
-    public highScoreElement = (document.getElementById("highScore") as HTMLDivElement);
-    public highScore = 0;
     public static playMode = document.getElementById("playMode") as HTMLSelectElement;
     public speed:number = 160;
     public height:number = 30;
@@ -45,7 +43,7 @@ export class Player implements GameObject
                     //move down
                     this.position.y += time/1000 * this.speed
                 }
-                if (this.position.y > this.gameEngine.ball.position.y && this.position.y > 4)
+                if (this.position.y > this.gameEngine.ball.position.y && this.position.y > 1)
                 {
                     //move up
                     this.position.y -= time/1000 * this.speed

@@ -14,6 +14,7 @@ export class Ball implements GameObject
     public radius:number = this.size/2.5;
     public highScoreElement = (document.getElementById("highScore") as HTMLDivElement);
     public highScore = 0;
+    public divPos = (document.getElementById("ballY") as HTMLDivElement);
 
     constructor (position:Vector, gameEngine:GameEngine)
     {
@@ -26,9 +27,18 @@ export class Ball implements GameObject
 
     // Update method takes care of all logic
     update(time: number): void {
+        //Ball Y-Pos for debugging
+        this.divPos.textContent = "Ball Y-Pos : " + this.position.y.toString();
+        //adjusts ball pos to avoid getting stuck in edges
+            if (this.position.y < 4) {
+                this.position.y += 2;
+            }
+            if (this.position.y > this.gameEngine.canvasHeight-10){
+                this.position.y -= 2;
+            } 
         //testing for collisions with walls -> change direction
         if (this.position.x <=4 ||this.position.x >= this.gameEngine.canvasWidth-this.size-4) this.direction.x *= -1;
-        if (this.position.y <=5 ||this.position.y >= this.gameEngine.canvasHeight-this.size-5) this.direction.y *= -1;
+        if (this.position.y <=5 ||this.position.y >= this.gameEngine.canvasHeight-10) this.direction.y *= -1;
 
         //testing for Collision with any gameobject
         this.gameEngine.objects.forEach(elegameobj => {
@@ -40,7 +50,7 @@ export class Ball implements GameObject
         this.position.y += this.direction.y * this.speed * time/1000;
     }
     
-    // draw ball on canvas
+    // draw circle ball on canvas
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, (Math.PI / 180) * 360);
@@ -64,6 +74,7 @@ export class Ball implements GameObject
                     document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
                 }
             }
+
             this.direction.x *= -1;
         }
         //Increases speed of ball and AI opponent for every score point
