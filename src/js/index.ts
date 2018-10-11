@@ -7,7 +7,7 @@ import { Ball } from "./ball";
 /*
     THis is the main PONG GAME script
     Todo: 
-        Fix CircleToRectangle collission (ball med players)
+        Fix CircleToRectangle collission (ball med players) - done
         Add intro screen instead of dropdown
         Player 2 score on playMode.value = "vsPlayer"
         PowerUps:

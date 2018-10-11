@@ -27,8 +27,8 @@ export class Ball implements GameObject
 
     // Update method takes care of all logic
     update(time: number): void {
-        //Ball Y-Pos for debugging
-        this.divPos.textContent = "Ball Y-Pos : " + this.position.y.toString();
+        //Ball Y-Pos for debugging - uncomment to see div element
+        //this.divPos.textContent = "Ball Y-Pos : " + this.position.y.toString();
         //adjusts ball pos to avoid getting stuck in edges
             if (this.position.y < 4) {
                 this.position.y += 2;
