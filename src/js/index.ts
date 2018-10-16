@@ -20,6 +20,7 @@ import { Ball } from "./ball";
 export class GameEngine
 {
     public static points:number;
+    public static points2:number;
     public static tries:number;
     // items in the game
     public ball:Ball;
@@ -56,13 +57,14 @@ export class GameEngine
         this.canvasHeight = this.canvas.height;
 
         GameEngine.points = 0;
+        GameEngine.points2 = 0;
         GameEngine.tries = 0;
 
         // listen for keyboard input
         document.addEventListener('keyup', this.keyUp.bind(this));
         document.addEventListener('keydown', this.keyDown.bind(this));
 
-        //ceate gameobjects
+        //ceate gameobjects 
         this.objects.push(new Framerate(new Vector(10,10)));
         
         this.player1 = new Player(new Vector(20,10), this,1);
@@ -123,7 +125,7 @@ export class GameEngine
     
         if (distX <= (rect.width/2)) { return true; } 
         if (distY <= (rect.height/2)) { return true; }
-    
+        
         var dx=distX-rect.width/2;
         var dy=distY-rect.height/2;
         return (dx*dx+dy*dy<=(circle.radius*circle.radius));
@@ -172,16 +174,30 @@ export class GameEngine
             });
 
             //Check for loss and reset Score&Speed
-            if (this.ball.position.x < this.player1.position.x+12)
+            if (this.ball.position.x < this.player1.position.x+12 && Player.playMode.value == "vsAi")
             {
                 GameEngine.tries++;
                 GameEngine.points = 0;
+                GameEngine.points2 = 0;
                 this.ball.position.x = this.canvasWidth/2;
                 this.ball.speed = 160;
                 this.player2.speed = 160;
+                this.player1.speed = 160;
                 document.getElementById("amountTries").textContent = "Deaths : " + GameEngine.tries.toString();
             }
-            
+            //
+            else if (Player.playMode.value == "vsPlayer" && this.ball.position.x < this.player1.position.x+12)
+            {
+                GameEngine.points2++;
+                this.ball.position.x = this.canvasWidth/2;
+                this.ball.speed = 160;
+            }
+            else if (Player.playMode.value == "vsPlayer" && this.ball.position.x > this.player2.position.x)
+            {
+                GameEngine.points++;
+                this.ball.position.x = this.canvasWidth/2;
+                this.ball.speed = 160;
+            }
             //every element is updated
             element.update(time);
             
@@ -199,4 +215,3 @@ export class GameEngine
 
 //start gameengine
 new GameEngine();
-

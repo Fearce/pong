@@ -1,6 +1,7 @@
 import { Vector } from "./vector";
 import { GameObject } from "./gameObject";
 import { GameEngine } from "./index";
+import { Player } from "./player";
 
 export class Ball implements GameObject
 {
@@ -65,23 +66,31 @@ export class Ball implements GameObject
         // reverse direction if player collides with ball
         if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
-            if (other == this.gameEngine.player1)
+            if (other == this.gameEngine.player1 && Player.playMode.value == "vsAi")
             {
                 GameEngine.points++;
-                if (+this.highScore < GameEngine.points)
+                //Set high score
+                if (+this.highScore < GameEngine.points && Player.playMode.value == "vsAi")
                 {
                     this.highScore = GameEngine.points;
                     document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
                 }
             }
+            //else if (other == this.gameEngine.player2)
+            //{
+            //    GameEngine.points2++;
+            //}
 
             this.direction.x *= -1;
         }
         //Increases speed of ball and AI opponent for every score point
-        if (other == this.gameEngine.player1)
+        if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
             this.speed *= 1.05;
-            this.gameEngine.player2.speed *= 1.05;
+            if (Player.playMode.value == "vsAi" && other == this.gameEngine.player1)
+            {
+                this.gameEngine.player2.speed *= 1.05;
+            }
         }
     }
 

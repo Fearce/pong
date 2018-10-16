@@ -1,6 +1,7 @@
 import {Vector} from './vector';
 import { GameObject } from './gameObject';
 import { GameEngine } from "./index";
+import { Player } from './player';
 
 /*
     this class makes a fps counter to show how often the game refreshes
@@ -27,8 +28,15 @@ export class Framerate implements GameObject
 
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points, this.position.x, this.position.y);
+        if (Player.playMode.value == "vsAi")
+        {
+            ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points, this.position.x, this.position.y);
+        }
+        else 
+        {
+            ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points + "                                                    Score: " + +GameEngine.points2, this.position.x, this.position.y);
+        }
 
     }
-
 }
+
