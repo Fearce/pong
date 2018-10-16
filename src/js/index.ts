@@ -26,6 +26,23 @@ export class GameEngine
     public ball:Ball;
     public player1:Player;
     public player2:Player;
+
+    //blocks, better way to do this - dont program when tired 
+    public player3:Player;
+    public player4:Player;
+    public player5:Player;
+    public player6:Player;
+    public player7:Player;
+    public player8:Player;
+    public player9:Player;
+    public player10:Player;
+    public player11:Player;
+    public player12:Player;
+    public player13:Player;
+    public player14:Player;
+    public player15:Player;
+    public player16:Player;
+    public player17:Player;
  
     // canvas info
     public canvasWidth:number;
@@ -36,6 +53,9 @@ export class GameEngine
     public qKey:boolean;
     public oKey:boolean;
     public lKey:boolean;
+    public oneKey:boolean;
+    public twoKey:boolean;
+    public threeKey:boolean;
 
     private canvas:HTMLCanvasElement;
     private ctx:CanvasRenderingContext2D;
@@ -43,10 +63,18 @@ export class GameEngine
     // array with all gameobjects in the game - If you want more objects in the game add them to this array!
     public objects:GameObject[] = new Array<GameObject>();
 
+    // array with all blocks
+    public blocks:Player[] = new Array<Player>();
+
     // kepp track of time between loops
     private date: Date = new Date();
     private timeZero: number = this.date.getTime();
     private timeNow: number;
+
+    //Intro Frames
+    private frameOne:Framerate;
+    private frameTwo:Framerate;
+    private frameThree:Framerate;
 
     constructor()
     {
@@ -59,6 +87,7 @@ export class GameEngine
         GameEngine.points = 0;
         GameEngine.points2 = 0;
         GameEngine.tries = 0;
+        
 
         // listen for keyboard input
         document.addEventListener('keyup', this.keyUp.bind(this));
@@ -66,9 +95,17 @@ export class GameEngine
 
         //ceate gameobjects 
         this.objects.push(new Framerate(new Vector(10,10)));
+
+        //Introscreen (using framerates because why not)
+        this.frameOne = new Framerate(new Vector(this.canvasWidth/2-40,40),"Press 1 for single-player",true);
+        this.frameTwo = new Framerate(new Vector(this.canvasWidth/2-40,60),"Press 2 for multi-player",true);
+        this.frameThree= new Framerate(new Vector(this.canvasWidth/2-40,80),"Press 3 for nothing yet",true);
+        this.objects.push(this.frameOne);
+        this.objects.push(this.frameTwo);
+        this.objects.push(this.frameThree);
         
         this.player1 = new Player(new Vector(20,10), this,1);
-        this.player2 = new Player(new Vector(this.canvasWidth-40,10), this,2);
+        this.player2 = new Player(new Vector(this.canvasWidth-30,10), this,2);
         this.objects.push(this.player1);
         this.objects.push(this.player2);
 
@@ -94,6 +131,16 @@ export class GameEngine
                 break;
             case "l":
                 this.lKey = true;
+                break;
+            case "1":
+                this.oneKey = true;
+                break;
+            case "2":
+                this.twoKey = true;
+                break;
+            case "3":
+                this.threeKey = true;
+                break;
         }
     }
 
@@ -112,6 +159,16 @@ export class GameEngine
                 break;
             case "l":
                 this.lKey = false;
+                break;
+            case "1":
+                this.oneKey = false;
+                break;
+            case "2":
+                this.twoKey = false;
+                break;
+            case "3":
+                this.threeKey = false;
+                break;
         }   
     } 
     
@@ -146,64 +203,129 @@ export class GameEngine
     // the main game loop
     private gameLoop()
     {
-        // clear the screen in every update
-        this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-        this.date = new Date();
-        this.timeNow = this.date.getTime()
-        var time = this.timeNow-this.timeZero;
-        this.timeZero=this.timeNow;
-
-        // run throght all objects
-        this.objects.forEach(element => {
-            //all objects are tested for collisions on all objects
-            this.objects.forEach(other => {  
-                if (element !== other && element != this.ball) //R2R collision
-                {
-                    if (this.Collide(element, other))
-                    {
-                        element.onColliosion(other);
-                    }
-                }
-                if (element !== other && element == this.ball) //R2C collision
-                {
-                    if (this.RectCircleColliding(this.ball, other))
-                    {
-                        element.onColliosion(other);
-                    }
-                }
-            });
-
-            //Check for loss and reset Score&Speed
-            if (this.ball.position.x < this.player1.position.x+12 && Player.playMode.value == "vsAi")
+        if (Player.playMode == "None")
+        {
+            this.objects.forEach(e => {e.draw(this.ctx)});
+            if (this.oneKey)
             {
-                GameEngine.tries++;
+                Player.playMode = "vsAi";
+                this.frameOne.position.x = 40000;
+                this.frameTwo.position.x = 40000;
+                this.frameThree.position.x = 40000;
                 GameEngine.points = 0;
                 GameEngine.points2 = 0;
-                this.ball.position.x = this.canvasWidth/2;
                 this.ball.speed = 160;
                 this.player2.speed = 160;
                 this.player1.speed = 160;
-                document.getElementById("amountTries").textContent = "Deaths : " + GameEngine.tries.toString();
             }
-            //
-            else if (Player.playMode.value == "vsPlayer" && this.ball.position.x < this.player1.position.x+12)
+            else if (this.twoKey)
             {
-                GameEngine.points2++;
-                this.ball.position.x = this.canvasWidth/2;
+                Player.playMode = "vsPlayer";
+                this.frameOne.position.x = 40000;
+                this.frameTwo.position.x = 40000;
+                this.frameThree.position.x = 40000;
+                GameEngine.points = 0;
+                GameEngine.points2 = 0;
                 this.ball.speed = 160;
+                this.player2.speed = 160;
+                this.player1.speed = 160;
             }
-            else if (Player.playMode.value == "vsPlayer" && this.ball.position.x > this.player2.position.x)
+            else if (this.threeKey)
             {
-                GameEngine.points++;
-                this.ball.position.x = this.canvasWidth/2;
+                Player.playMode = "vsBlocks";
+                this.frameOne.position.x = 40000;
+                this.frameTwo.position.x = 40000;
+                this.frameThree.position.x = 40000;
+                this.player2.position.x = 40000;
+                GameEngine.points = 0;
+                GameEngine.points2 = 0;
                 this.ball.speed = 160;
+                this.player2.speed = 160;
+                this.player1.speed = 160;
             }
-            //every element is updated
-            element.update(time);
-            
+        }
+
+        else 
+        {
+            console.log(Player.playMode)
+// clear the screen in every update
+this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+this.date = new Date();
+this.timeNow = this.date.getTime()
+var time = this.timeNow-this.timeZero;
+this.timeZero=this.timeNow;
+
+// run throght all objects
+this.objects.forEach(element => {
+    //all objects are tested for collisions on all objects
+    this.objects.forEach(other => {  
+        if (element !== other && element != this.ball) //R2R collision
+        {
+            if (this.Collide(element, other))
+            {
+                element.onColliosion(other);
+            }
+        }
+        if (element !== other && element == this.ball) //R2C collision
+        {
+            if (this.RectCircleColliding(this.ball, other))
+            {
+                element.onColliosion(other);
+            }
+        }
+    });
+
+    //Makes sure ball is never out of bounds
+    if (this.ball.position.x > this.canvasWidth || this.ball.position.y > this.canvasHeight)
+    {
+        this.ball.position.x = this.canvasWidth/2;
+        this.ball.position.y = this.canvasHeight/2;
+    }
+
+    //Check for loss and reset Score&Speed
+    if (this.ball.position.x < this.player1.position.x+12 && Player.playMode == "vsAi")
+    {
+        GameEngine.tries++;
+        GameEngine.points = 0;
+        GameEngine.points2 = 0;
+        this.ball.position.x = this.canvasWidth/2;
+        this.ball.speed = 160;
+        this.player2.speed = 160;
+        this.player1.speed = 160;
+        document.getElementById("amountTries").textContent = "Deaths : " + GameEngine.tries.toString();
+    }
+    //
+    else if (Player.playMode == "vsPlayer" && this.ball.position.x < this.player1.position.x+12)
+    {
+        GameEngine.points2++;
+        this.ball.position.x = this.canvasWidth/2;
+        this.ball.speed = 160;
+        this.ball.direction.x *= -1;
+    }
+    else if (Player.playMode == "vsPlayer" && this.ball.position.x > this.player2.position.x)
+    {
+        GameEngine.points++;
+        this.ball.position.x = this.canvasWidth/2;
+        this.ball.speed = 160;
+        this.ball.direction.x *= -1;
+    }
+    //every element is updated
+    element.update(time);
+    
             // every element is drawn on canvas
             element.draw(this.ctx);
-        });
+            });
+        }
+
+        if (Player.playMode == "vsBlocks")
+        {
+            this.blocks.forEach(e => {
+                e.update(time);
+            e.draw(this.ctx);
+            });
+        }
+        
+        
         
         // call the main gamelop again (~60fps by default)
         window.requestAnimationFrame(this.gameLoop.bind(this));

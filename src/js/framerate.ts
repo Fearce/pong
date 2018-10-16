@@ -11,12 +11,16 @@ export class Framerate implements GameObject
     points: number;
     height: number;
     width: number;
+    message: string;
+    intro: boolean;
     onColliosion(other: GameObject): void {
     }
    
-    constructor(position: Vector)
+    constructor(position: Vector, msg?:string, temp?:boolean)
     {
         this.position = position;
+        this.message = msg;
+        this.intro = temp;
     }
 
     public position:Vector;
@@ -28,13 +32,18 @@ export class Framerate implements GameObject
 
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = "#ffffff";
-        if (Player.playMode.value == "vsAi")
+        if (Player.playMode == "vsAi" || Player.playMode == "vsBlocks")
         {
             ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points, this.position.x, this.position.y);
         }
-        else 
+        else if (Player.playMode == "vsPlayer")
         {
             ctx.fillText(""+Math.round(1000/this.time) + "fps  " + "Score: " + +GameEngine.points + "                                                    Score: " + +GameEngine.points2, this.position.x, this.position.y);
+        }
+        else if (Player.playMode == "None")
+        {
+            ctx.font="12px Georgia";
+            ctx.fillText(this.message,this.position.x, this.position.y);
         }
 
     }

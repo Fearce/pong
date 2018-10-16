@@ -7,7 +7,8 @@ export class Player implements GameObject
     public position:Vector 
     private gameEngine:GameEngine;
     public PlayerNumber: number;
-    public static playMode = document.getElementById("playMode") as HTMLSelectElement;
+    //playModes "None" , "vsAi", "vsPlayer", "vsBlocks"
+    public static playMode:string = "None";
     public speed:number = 160;
     public height:number = 30;
     public width:number = 10;
@@ -34,9 +35,9 @@ export class Player implements GameObject
                 this.position.y -= time/1000 * this.speed
             }
         }
-        else
+        else if (this.PlayerNumber == 2)
         {
-            if (Player.playMode.value == "vsAi")
+            if (Player.playMode == "vsAi")
             {
                 if (this.position.y < this.gameEngine.ball.position.y && this.position.y < this.gameEngine.canvasHeight-32)
                 {
@@ -49,7 +50,7 @@ export class Player implements GameObject
                     this.position.y -= time/1000 * this.speed
                 }
             }
-            else if (Player.playMode.value == "vsPlayer")
+            else if (Player.playMode == "vsPlayer")
             {
                 if (this.gameEngine.lKey && this.position.y < this.gameEngine.canvasHeight-32)
                 {
@@ -64,6 +65,10 @@ export class Player implements GameObject
             }
             
             //this.position.y = this.gameEngine.ball.position.y-12; //Ai opponent with no-collision??
+        }
+        else if (this.PlayerNumber > 2)
+        {
+            
         }
        
     }

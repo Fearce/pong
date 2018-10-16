@@ -66,11 +66,12 @@ export class Ball implements GameObject
         // reverse direction if player collides with ball
         if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
-            if (other == this.gameEngine.player1 && Player.playMode.value == "vsAi")
+            //In AI Mode player get points for every collision with ball
+            if (other == this.gameEngine.player1 && Player.playMode == "vsAi")
             {
                 GameEngine.points++;
                 //Set high score
-                if (+this.highScore < GameEngine.points && Player.playMode.value == "vsAi")
+                if (+this.highScore < GameEngine.points && Player.playMode == "vsAi")
                 {
                     this.highScore = GameEngine.points;
                     document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
@@ -87,7 +88,7 @@ export class Ball implements GameObject
         if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
             this.speed *= 1.05;
-            if (Player.playMode.value == "vsAi" && other == this.gameEngine.player1)
+            if (Player.playMode == "vsAi" && other == this.gameEngine.player1)
             {
                 this.gameEngine.player2.speed *= 1.05;
             }
