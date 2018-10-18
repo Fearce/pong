@@ -2,6 +2,7 @@ import { GameObject } from "./gameObject";
 import { Framerate } from "./framerate";
 import { Vector } from "./vector";
 import { Player } from "./player";
+import { Block } from "./block";
 import { Ball } from "./ball";
 
 /*
@@ -45,6 +46,7 @@ export class GameEngine
     public player17:Player;
  
     // canvas info
+    public framerate:Framerate;
     public canvasWidth:number;
     public canvasHeight:number;
 
@@ -64,7 +66,8 @@ export class GameEngine
     public objects:GameObject[] = new Array<GameObject>();
 
     // array with all blocks
-    public blocks:Player[] = new Array<Player>();
+    public blocks:Block[] = new Array<Block>();
+    
 
     // kepp track of time between loops
     private date: Date = new Date();
@@ -87,6 +90,15 @@ export class GameEngine
         GameEngine.points = 0;
         GameEngine.points2 = 0;
         GameEngine.tries = 0;
+
+        for(var i = 0; i<15; i++)
+        {
+            var y = -50
+            var x = this.canvasWidth-30
+            var block = new Block(new Vector(x,y),this,i)
+            this.blocks.push(block);
+            this.objects.push(block);
+        }
         
 
         // listen for keyboard input
@@ -94,7 +106,8 @@ export class GameEngine
         document.addEventListener('keydown', this.keyDown.bind(this));
 
         //ceate gameobjects 
-        this.objects.push(new Framerate(new Vector(10,10)));
+        this.framerate = new Framerate(new Vector(10,10));
+        this.objects.push(this.framerate);
 
         //Introscreen (using framerates because why not)
         this.frameOne = new Framerate(new Vector(this.canvasWidth/2-40,40),"Press 1 for single-player",true);
@@ -205,7 +218,14 @@ export class GameEngine
     {
         if (Player.playMode == "None")
         {
+            document.getElementById("highScore").innerText = "";
+            document.getElementById("amountTries").innerText = "";
+            this.framerate.position.x = 40000;
+            this.ball.position.x = 40000;
+            this.player1.position.x = 40000;
+            this.player2.position.x = 40000;
             this.objects.forEach(e => {e.draw(this.ctx)});
+            
             if (this.oneKey)
             {
                 Player.playMode = "vsAi";
@@ -217,6 +237,11 @@ export class GameEngine
                 this.ball.speed = 160;
                 this.player2.speed = 160;
                 this.player1.speed = 160;
+                this.framerate.position.x = 10;
+                this.ball.position.x = this.canvasWidth/2;
+                this.player1.position.x = 20;
+                this.player2.position.x = this.canvasWidth-30;
+                this.blocks.forEach(element => { element.position.x = 4000;});
             }
             else if (this.twoKey)
             {
@@ -229,6 +254,11 @@ export class GameEngine
                 this.ball.speed = 160;
                 this.player2.speed = 160;
                 this.player1.speed = 160;
+                this.framerate.position.x = 10;
+                this.ball.position.x = this.canvasWidth/2;
+                this.player1.position.x = 20;
+                this.player2.position.x = this.canvasWidth-30;
+                this.blocks.forEach(element => { element.position.x = 4000;});
             }
             else if (this.threeKey)
             {
@@ -242,12 +272,35 @@ export class GameEngine
                 this.ball.speed = 160;
                 this.player2.speed = 160;
                 this.player1.speed = 160;
+                this.framerate.position.x = 10;
+                this.ball.position.x = this.canvasWidth/2;
+                this.player1.position.x = 20;
+                this.blocks.forEach(element => { 
+                    if (element.BlockNumber < 5)
+                    {
+                        var x = this.canvasWidth-30
+                        var y = this.canvasHeight-(36*element.BlockNumber+40)
+                    }
+                    else if (element.BlockNumber >= 5 && element.BlockNumber < 10)
+                    {
+                        x = this.canvasWidth-45
+                        y = this.canvasHeight-(36*(element.BlockNumber-5)+40)
+                    }
+                    else if (element.BlockNumber >= 10)
+                    {
+                        x = this.canvasWidth-60
+                        y = this.canvasHeight-(36*(element.BlockNumber-10)+40)
+                    }
+                    element.position.x = x;
+                    element.position.y = y;
+                });
+                //this.player2.position.x = this.canvasWidth-30;
             }
         }
 
         else 
         {
-            console.log(Player.playMode)
+            //console.log(Player.playMode)
 // clear the screen in every update
 this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
 this.date = new Date();
@@ -276,11 +329,15 @@ this.objects.forEach(element => {
     });
 
     //Makes sure ball is never out of bounds
-    if (this.ball.position.x > this.canvasWidth || this.ball.position.y > this.canvasHeight)
+    if (Player.playMode != "None")
     {
-        this.ball.position.x = this.canvasWidth/2;
-        this.ball.position.y = this.canvasHeight/2;
+        if (this.ball.position.x > this.canvasWidth || this.ball.position.y > this.canvasHeight)
+        {
+            this.ball.position.x = this.canvasWidth/2;
+            this.ball.position.y = this.canvasHeight/2;
+        }
     }
+    
 
     //Check for loss and reset Score&Speed
     if (this.ball.position.x < this.player1.position.x+12 && Player.playMode == "vsAi")
