@@ -115,7 +115,7 @@ export class GameEngine
         //Introscreen (using framerates because why not)
         this.frameOne = new Framerate(new Vector(this.canvasWidth/2-40,40),"Press 1 for single-player",true);
         this.frameTwo = new Framerate(new Vector(this.canvasWidth/2-40,60),"Press 2 for multi-player",true);
-        this.frameThree= new Framerate(new Vector(this.canvasWidth/2-40,80),"Press 3 for nothing yet",true);
+        this.frameThree= new Framerate(new Vector(this.canvasWidth/2-40,80),"Press 3 for blocks",true);
         this.objects.push(this.frameOne);
         this.objects.push(this.frameTwo);
         this.objects.push(this.frameThree);
