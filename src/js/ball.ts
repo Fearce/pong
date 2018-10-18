@@ -77,6 +77,14 @@ export class Ball implements GameObject
                     document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
                 }
             }
+            if (Player.playMode == "vsBlocks")
+            {
+                if (+this.highScore < GameEngine.points)
+                {
+                    this.highScore = GameEngine.points;
+                    document.getElementById("highScore").textContent = "High Score : " + GameEngine.points.toString();
+                }
+            }
             //else if (other == this.gameEngine.player2)
             //{
             //    GameEngine.points2++;
@@ -93,6 +101,10 @@ export class Ball implements GameObject
                 this.gameEngine.player2.speed *= 1.05;
             }
         }
+
+        
+
+
     }
 
 }

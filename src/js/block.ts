@@ -30,9 +30,10 @@ export class Block implements GameObject
     onColliosion(other: GameObject): void {
         if(other == this.gameEngine.ball)
         {
+            this.gameEngine.ball.direction.x *= -1;
+            //this.gameEngine.ball.position.x -=6;
             this.position.x = 40000;
             GameEngine.points++;
-            this.gameEngine.ball.direction.x *= -1;
         }
         // not doing anything at the moment...
     }

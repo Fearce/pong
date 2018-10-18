@@ -16,6 +16,9 @@ import { Ball } from "./ball";
             Speed reset
             Opposing player slow down
             More points
+
+        
+
 */
 
 export class GameEngine
@@ -91,7 +94,7 @@ export class GameEngine
         GameEngine.points2 = 0;
         GameEngine.tries = 0;
 
-        for(var i = 0; i<15; i++)
+        for(var i = 0; i<25; i++)
         {
             var y = -50
             var x = this.canvasWidth-30
@@ -286,10 +289,20 @@ export class GameEngine
                         x = this.canvasWidth-45
                         y = this.canvasHeight-(36*(element.BlockNumber-5)+40)
                     }
-                    else if (element.BlockNumber >= 10)
+                    else if (element.BlockNumber >= 10 && element.BlockNumber < 15)
                     {
                         x = this.canvasWidth-60
                         y = this.canvasHeight-(36*(element.BlockNumber-10)+40)
+                    }
+                    else if (element.BlockNumber >= 15 && element.BlockNumber < 20)
+                    {
+                        x = this.canvasWidth-75
+                        y = this.canvasHeight-(36*(element.BlockNumber-15)+40)
+                    }
+                    else if (element.BlockNumber >= 20)
+                    {
+                        x = this.canvasWidth-90
+                        y = this.canvasHeight-(36*(element.BlockNumber-20)+40)
                     }
                     element.position.x = x;
                     element.position.y = y;
@@ -366,6 +379,52 @@ this.objects.forEach(element => {
         this.ball.speed = 160;
         this.ball.direction.x *= -1;
     }
+    else if (this.ball.position.x < this.player1.position.x+12 && Player.playMode == "vsBlocks")
+    {
+        GameEngine.tries++;
+        GameEngine.points = 0;
+        GameEngine.points2 = 0;
+        this.ball.position.x = this.canvasWidth/2;
+        this.ball.speed = 160;
+        this.player2.speed = 160;
+        this.player1.speed = 160;
+        document.getElementById("amountTries").textContent = "Deaths : " + GameEngine.tries.toString();
+    }
+
+    //Reset blocks for infinite gameplay
+    if (Player.playMode == "vsBlocks" && GameEngine.points % 25 === 0)
+    {
+        this.blocks.forEach(element => { 
+            if (element.BlockNumber < 5)
+            {
+                var x = this.canvasWidth-30
+                var y = this.canvasHeight-(36*element.BlockNumber+40)
+            }
+            else if (element.BlockNumber >= 5 && element.BlockNumber < 10)
+            {
+                x = this.canvasWidth-45
+                y = this.canvasHeight-(36*(element.BlockNumber-5)+40)
+            }
+            else if (element.BlockNumber >= 10 && element.BlockNumber < 15)
+            {
+                x = this.canvasWidth-60
+                y = this.canvasHeight-(36*(element.BlockNumber-10)+40)
+            }
+            else if (element.BlockNumber >= 15 && element.BlockNumber < 20)
+            {
+                x = this.canvasWidth-75
+                y = this.canvasHeight-(36*(element.BlockNumber-15)+40)
+            }
+            else if (element.BlockNumber >= 20)
+            {
+                x = this.canvasWidth-90
+                y = this.canvasHeight-(36*(element.BlockNumber-20)+40)
+            }
+            element.position.x = x;
+            element.position.y = y;
+        });
+    }
+
     //every element is updated
     element.update(time);
     
@@ -390,7 +449,8 @@ this.objects.forEach(element => {
 
 
     }
-}
 
+    
+}
 //start gameengine
 new GameEngine();
