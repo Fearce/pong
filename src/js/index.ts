@@ -30,23 +30,6 @@ export class GameEngine
     public ball:Ball;
     public player1:Player;
     public player2:Player;
-
-    //blocks, better way to do this - dont program when tired 
-    public player3:Player;
-    public player4:Player;
-    public player5:Player;
-    public player6:Player;
-    public player7:Player;
-    public player8:Player;
-    public player9:Player;
-    public player10:Player;
-    public player11:Player;
-    public player12:Player;
-    public player13:Player;
-    public player14:Player;
-    public player15:Player;
-    public player16:Player;
-    public player17:Player;
  
     // canvas info
     public framerate:Framerate;
@@ -219,6 +202,7 @@ export class GameEngine
     // the main game loop
     private gameLoop()
     {
+        //Sets the next playmode
         if (Player.playMode == "None")
         {
             document.getElementById("highScore").innerText = "";
@@ -310,7 +294,7 @@ export class GameEngine
                 //this.player2.position.x = this.canvasWidth-30;
             }
         }
-
+        //When PlayMode is set run normal gameloop
         else 
         {
             //console.log(Player.playMode)
@@ -379,7 +363,7 @@ this.objects.forEach(element => {
         this.ball.speed = 160;
         this.ball.direction.x *= -1;
     }
-    else if (this.ball.position.x < this.player1.position.x+12 && Player.playMode == "vsBlocks")
+    else if (this.ball.position.x < this.player1.position.x+8 && Player.playMode == "vsBlocks")
     {
         GameEngine.tries++;
         GameEngine.points = 0;
