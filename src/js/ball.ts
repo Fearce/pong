@@ -98,7 +98,7 @@ export class Ball implements GameObject
             this.speed *= 1.05;
             if (Player.playMode == "vsAi")
             {
-                this.gameEngine.player2.speed *= 1.05;
+                this.gameEngine.player2.speed *= 1.06;
             }
         }
 

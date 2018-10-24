@@ -39,12 +39,12 @@ export class Player implements GameObject
         {
             if (Player.playMode == "vsAi")
             {
-                if (this.position.y < this.gameEngine.ball.position.y && this.position.y < this.gameEngine.canvasHeight-32)
+                if (this.position.y+20 < this.gameEngine.ball.position.y && this.position.y < this.gameEngine.canvasHeight-32)
                 {
                     //move down
                     this.position.y += time/1000 * this.speed
                 }
-                if (this.position.y > this.gameEngine.ball.position.y && this.position.y > 1)
+                if (this.position.y+10 > this.gameEngine.ball.position.y && this.position.y > 4)
                 {
                     //move up
                     this.position.y -= time/1000 * this.speed
