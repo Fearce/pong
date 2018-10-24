@@ -96,7 +96,7 @@ export class Ball implements GameObject
         if (other == this.gameEngine.player1 || other == this.gameEngine.player2)
         {
             this.speed *= 1.05;
-            if (Player.playMode == "vsAi" && other == this.gameEngine.player1)
+            if (Player.playMode == "vsAi")
             {
                 this.gameEngine.player2.speed *= 1.05;
             }
